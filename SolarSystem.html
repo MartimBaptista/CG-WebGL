@@ -5,7 +5,7 @@
     <script src="twgl.js-5.2.0/dist/5.x/twgl-full.js"></script>
 </head>
 
-<body>
+<body style="background-color: black;">
     <doctype html="">
         <!--Nuno Garcia, Faculdade de Ciências, Universidade de Lisboa, 2021-->
         <title>Projeto</title>
@@ -89,12 +89,24 @@
             const gl = document.querySelector("canvas").getContext("webgl");
             const programInfo = twgl.createProgramInfo(gl, ["vs", "fs"]);
 
+            const sun = twgl.primitives.createSphereBufferInfo(gl, 5, 100, 100);
             const earth = twgl.primitives.createSphereBufferInfo(gl, 1, 100, 100);
-            const mars = twgl.primitives.createSphereBufferInfo(gl, 0.4, 100, 100);
+            const moon = twgl.primitives.createSphereBufferInfo(gl, 0.4, 100, 100);
 
+            var sun_tex = twgl.createTexture(gl, { src: '2k_sun.jpg' });
             var earth_tex = twgl.createTexture(gl, { src: '2k_earth_daymap.jpg' });
-            var mars_tex = twgl.createTexture(gl, { src: 'missing_texture.jpeg' });
+            var moon_tex = twgl.createTexture(gl, { src: '2k_moon.jpg' });
 
+
+            const sun_uniforms = {
+                u_lightWorldPos: [0, 0, 0],
+                u_lightColor: [1, 1, 1, 1],
+                u_ambient: [0, 0, 0, 1],
+                u_specular: [1, 1, 1, 1],
+                u_shininess: 10,
+                u_specularFactor: 0.5,
+                u_diffuse: sun_tex,
+            };
 
             const earth_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
@@ -106,14 +118,14 @@
                 u_diffuse: earth_tex,
             };
 
-            const mars_uniforms = {
+            const moon_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
                 u_ambient: [0, 0, 0, 1],
                 u_specular: [1, 1, 1, 1],
                 u_shininess: 10,
                 u_specularFactor: 0.5,
-                u_diffuse: mars_tex,
+                u_diffuse: moon_tex,
             };
 
             function render(time) {
@@ -122,16 +134,16 @@
                 gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
                 gl.enable(gl.DEPTH_TEST);
-                gl.clearColor(0, 0, 0, 0);
+                gl.clearColor(0, 0, 0, 1);
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
                 const fov = 30 * Math.PI / 180;
                 const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
                 const zNear = 0.5;
-                const zFar = 20;
+                const zFar = 100;
                 const projection = m4.perspective(fov, aspect, zNear, zFar);
 
-                const eye = [0, 0, 10];
+                const eye = [0, 0, 70];
                 const target = [0, 0, 0];
                 const up = [0, 1, 0];
                 const camera = m4.lookAt(eye, target, up);
@@ -140,14 +152,34 @@
                 const viewProjection = m4.multiply(projection, view);
                 gl.useProgram(programInfo.program);
 
-                //Eath:
+                //Sun:
+                const sun_pos = m4.identity();
+                //Parent Body Location
+                m4.translate(sun_pos, [0,0,0,1], sun_pos)
+                
+                //rotation and inclination
+                m4.rotateY(sun_pos, time, sun_pos)
+                
+                sun_uniforms.u_viewInverse = camera;
+                sun_uniforms.u_world = sun_pos;
+                sun_uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(sun_pos));
+                sun_uniforms.u_worldViewProjection = m4.multiply(viewProjection, sun_pos);
+
+                twgl.setUniforms(programInfo, sun_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, sun);
+                twgl.drawBufferInfo(gl, sun);
+                //
+                
+                //Earth:
                 const earth_pos = m4.identity();
-                //m4.rotateX(world, time, world)
-                //m4.rotateZ(world, time, world)
+                terra = m4.identity();
                 //Parent Body Location
                 m4.translate(earth_pos, [0,0,0,1], earth_pos)
-                //translation
-                
+                //translation around Sun
+                m4.rotateY(earth_pos, time, earth_pos)
+                m4.translate(earth_pos, [12,0,0,1], earth_pos)
+                m4.rotateY(earth_pos, time*-1, earth_pos)
+                m4.copy(earth_pos, terra)
                 //rotation and inclination
                 m4.rotateZ(earth_pos, 0.4, earth_pos)
                 m4.rotateY(earth_pos, time, earth_pos)
@@ -162,28 +194,26 @@
                 twgl.drawBufferInfo(gl, earth);
                 //
 
-                //Eath:
-                const mars_pos = m4.identity();
-                //m4.rotateX(world, time, world)
-                //m4.rotateZ(world, time, world)
+                //Moon:
+                const moon_pos = m4.identity();
                 //Parent Body Location
-                m4.translate(mars_pos, [0,0,0,1], mars_pos)
-                //translation
-                m4.rotateY(mars_pos, time*2, mars_pos)
-                m4.translate(mars_pos, [1.4,0,0,1], mars_pos)
-                m4.rotateY(mars_pos, time*-2, mars_pos)
+                m4.copy(terra, moon_pos)
+                //translation around Earth
+                m4.rotateY(moon_pos, time*2, moon_pos)
+                m4.translate(moon_pos, [2.4,0,0,1], moon_pos)
+                m4.rotateY(moon_pos, time*-2, moon_pos)
                 //rotation and inclination
-                m4.rotateZ(mars_pos, 0.2, mars_pos)
-                m4.rotateY(mars_pos, time*-0.5, mars_pos)
+                m4.rotateZ(moon_pos, 0.2, moon_pos)
+                m4.rotateY(moon_pos, time*-0.5, moon_pos)
                 
-                mars_uniforms.u_viewInverse = camera;
-                mars_uniforms.u_world = mars_pos;
-                mars_uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(mars_pos));
-                mars_uniforms.u_worldViewProjection = m4.multiply(viewProjection, mars_pos);
+                moon_uniforms.u_viewInverse = camera;
+                moon_uniforms.u_world = moon_pos;
+                moon_uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(moon_pos));
+                moon_uniforms.u_worldViewProjection = m4.multiply(viewProjection, moon_pos);
 
-                twgl.setUniforms(programInfo, mars_uniforms);
-                twgl.setBuffersAndAttributes(gl, programInfo, mars);
-                twgl.drawBufferInfo(gl, mars);
+                twgl.setUniforms(programInfo, moon_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, moon);
+                twgl.drawBufferInfo(gl, moon);
                 //
 
                 requestAnimationFrame(render);

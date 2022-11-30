@@ -49,7 +49,6 @@
             varying vec3 v_surfaceToLight;
             varying vec3 v_surfaceToView;
 
-            uniform sampler2D textura;
             uniform vec4 u_lightColor;
             uniform vec4 u_ambient;
             uniform sampler2D u_diffuse;
@@ -81,8 +80,7 @@
                             u_specular * litR.z * u_specularFactor)).rgb,
                   diffuseColor.a);
             
-                gl_FragColor = outColor;
-                gl_FragColor = 0.3*outColor + 0.7*texture2D(textura,v_texCoord);
+                gl_FragColor = 0.4*outColor + 0.6*diffuseColor;
             }
       
       </script>
@@ -91,28 +89,31 @@
             const gl = document.querySelector("canvas").getContext("webgl");
             const programInfo = twgl.createProgramInfo(gl, ["vs", "fs"]);
 
-            const bufferInfo = twgl.primitives.createCubeBufferInfo(gl, 2);
-            var tex = twgl.createTexture(gl, {
-                mag: gl.NEAREST,
-                min: gl.LINEAR,
-                src: [
-                    255, 255, 255, 255,
-                    192, 192, 192, 255,
-                    192, 192, 192, 255,
-                    255, 255, 255, 255,
-                ]
-            });
+            const earth = twgl.primitives.createSphereBufferInfo(gl, 1, 100, 100);
+            const mars = twgl.primitives.createSphereBufferInfo(gl, 0.4, 100, 100);
 
-            var tex = twgl.createTexture(gl, { src: 'GrassBlock.jpg' });
+            var earth_tex = twgl.createTexture(gl, { src: '2k_earth_daymap.jpg' });
+            var mars_tex = twgl.createTexture(gl, { src: 'missing_texture.jpeg' });
 
-            const uniforms = {
-                u_lightWorldPos: [0, 0, -5],
+
+            const earth_uniforms = {
+                u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
                 u_ambient: [0, 0, 0, 1],
                 u_specular: [1, 1, 1, 1],
-                u_shininess: 50,
-                u_specularFactor: 1,
-                u_diffuse: tex,
+                u_shininess: 10,
+                u_specularFactor: 0.5,
+                u_diffuse: earth_tex,
+            };
+
+            const mars_uniforms = {
+                u_lightWorldPos: [0, 10, 0],
+                u_lightColor: [1, 1, 1, 1],
+                u_ambient: [0, 0, 0, 1],
+                u_specular: [1, 1, 1, 1],
+                u_shininess: 10,
+                u_specularFactor: 0.5,
+                u_diffuse: mars_tex,
             };
 
             function render(time) {
@@ -130,35 +131,60 @@
                 const zFar = 20;
                 const projection = m4.perspective(fov, aspect, zNear, zFar);
 
-                const eye = [0, 0, -10];
+                const eye = [0, 0, 10];
                 const target = [0, 0, 0];
                 const up = [0, 1, 0];
                 const camera = m4.lookAt(eye, target, up);
                 const view = m4.inverse(camera);
 
                 const viewProjection = m4.multiply(projection, view);
-                const world = m4.identity();
-                //var world = identity;
-                //translate(world, [], world)
-                m4.rotateX(world, time, world)
-                m4.rotateZ(world, time, world)
-                m4.rotateY(world, time, world)
-
-                //uniforms.u_world = world;
-                //uniforms.u_worldViewProjection = m4.multiply(viewProjection, world);
-                //uniforms.textura = tex;
-                //uniforms.u_worldViewProjection = m4.multiply(viewProjection, world);
-                
-                uniforms.u_viewInverse = camera;
-                uniforms.u_world = world;
-                uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(world));
-                uniforms.textura = tex;
-                uniforms.u_worldViewProjection = m4.multiply(viewProjection, world);
-
                 gl.useProgram(programInfo.program);
-                twgl.setBuffersAndAttributes(gl, programInfo, bufferInfo);
-                twgl.setUniforms(programInfo, uniforms);
-                twgl.drawBufferInfo(gl, bufferInfo);
+
+                //Eath:
+                const earth_pos = m4.identity();
+                //m4.rotateX(world, time, world)
+                //m4.rotateZ(world, time, world)
+                //Parent Body Location
+                m4.translate(earth_pos, [0,0,0,1], earth_pos)
+                //translation
+                
+                //rotation and inclination
+                m4.rotateZ(earth_pos, 0.4, earth_pos)
+                m4.rotateY(earth_pos, time, earth_pos)
+                
+                earth_uniforms.u_viewInverse = camera;
+                earth_uniforms.u_world = earth_pos;
+                earth_uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(earth_pos));
+                earth_uniforms.u_worldViewProjection = m4.multiply(viewProjection, earth_pos);
+
+                twgl.setUniforms(programInfo, earth_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, earth);
+                twgl.drawBufferInfo(gl, earth);
+                //
+
+                //Eath:
+                const mars_pos = m4.identity();
+                //m4.rotateX(world, time, world)
+                //m4.rotateZ(world, time, world)
+                //Parent Body Location
+                m4.translate(mars_pos, [0,0,0,1], mars_pos)
+                //translation
+                m4.rotateY(mars_pos, time*2, mars_pos)
+                m4.translate(mars_pos, [1.4,0,0,1], mars_pos)
+                m4.rotateY(mars_pos, time*-2, mars_pos)
+                //rotation and inclination
+                m4.rotateZ(mars_pos, 0.2, mars_pos)
+                m4.rotateY(mars_pos, time*-0.5, mars_pos)
+                
+                mars_uniforms.u_viewInverse = camera;
+                mars_uniforms.u_world = mars_pos;
+                mars_uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(mars_pos));
+                mars_uniforms.u_worldViewProjection = m4.multiply(viewProjection, mars_pos);
+
+                twgl.setUniforms(programInfo, mars_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, mars);
+                twgl.drawBufferInfo(gl, mars);
+                //
 
                 requestAnimationFrame(render);
             }

@@ -5,7 +5,7 @@
     <script src="twgl.js-5.2.0/dist/5.x/twgl-full.js"></script>
 </head>
 
-<body style="background-color: black;">
+<body style="background-image: url('2k_stars_milky_way.jpg');">
     <doctype html="">
         <!--Nuno Garcia, Faculdade de Ciências, Universidade de Lisboa, 2021-->
         <title>Projeto</title>
@@ -169,7 +169,7 @@
                 gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
                 gl.enable(gl.DEPTH_TEST);
-                gl.clearColor(0, 0, 0, 1);
+                gl.clearColor(0, 0, 0, 0);
                 gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
                 const fov = 30 * Math.PI / 180;

@@ -99,13 +99,22 @@
             const earth = twgl.primitives.createSphereBufferInfo(gl, 1, 100, 100);
             const moon = twgl.primitives.createSphereBufferInfo(gl, 0.4, 100, 100);
             const mars = twgl.primitives.createSphereBufferInfo(gl, 1, 100, 100);
+            const jupiter = twgl.primitives.createSphereBufferInfo(gl, 2, 100, 100);
+            const saturn = twgl.primitives.createSphereBufferInfo(gl, 1.5, 100, 100);
+            const uranus = twgl.primitives.createSphereBufferInfo(gl, 1.2, 100, 100);
+            const neptune = twgl.primitives.createSphereBufferInfo(gl, 1.2, 100, 100);
 
             var sun_tex = twgl.createTexture(gl, { src: '2k_sun.jpg' });
             var mercury_tex = twgl.createTexture(gl, { src: '2k_mercury.jpg' });
-            var venus_tex = twgl.createTexture(gl, { src: '2k_venus_surface.jpg' });
+            var venus_tex = twgl.createTexture(gl, { src: '2k_venus_atmosphere.jpg' });
             var earth_tex = twgl.createTexture(gl, { src: '2k_earth_daymap.jpg' });
             var moon_tex = twgl.createTexture(gl, { src: '2k_moon.jpg' });
             var mars_tex = twgl.createTexture(gl, { src: '2k_mars.jpg' });
+            var jupiter_tex = twgl.createTexture(gl, { src: '2k_jupiter.jpg' });
+            var saturn_tex = twgl.createTexture(gl, { src: '2k_saturn.jpg' });
+            var uranus_tex = twgl.createTexture(gl, { src: '2k_uranus.jpg' });
+            var neptune_tex = twgl.createTexture(gl, { src: '2k_neptune.jpg' });
+            var path_tex = twgl.createTexture(gl, { src: 'path.jpg' });
 
 
             const sun_uniforms = {
@@ -118,7 +127,6 @@
                 u_diffuse: sun_tex,
                 sun: 1,
             };
-
             const mercury_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
@@ -129,7 +137,6 @@
                 u_diffuse: mercury_tex,
                 sun:0,
             };
-
             const venus_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
@@ -150,7 +157,6 @@
                 u_diffuse: earth_tex,
                 sun:0,
             };
-
             const moon_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
@@ -161,7 +167,6 @@
                 u_diffuse: moon_tex,
                 sun:0,
             };
-
             const mars_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
@@ -171,6 +176,56 @@
                 u_specularFactor: 0.5,
                 u_diffuse: mars_tex,
                 sun:0,
+            };
+            const jupiter_uniforms = {
+                u_lightWorldPos: [0, 10, 0],
+                u_lightColor: [1, 1, 1, 1],
+                u_ambient: [0, 0, 0, 1],
+                u_specular: [1, 1, 1, 1],
+                u_shininess: 10,
+                u_specularFactor: 0.5,
+                u_diffuse: jupiter_tex,
+                sun:0,
+            };
+            const saturn_uniforms = {
+                u_lightWorldPos: [0, 10, 0],
+                u_lightColor: [1, 1, 1, 1],
+                u_ambient: [0, 0, 0, 1],
+                u_specular: [1, 1, 1, 1],
+                u_shininess: 10,
+                u_specularFactor: 0.5,
+                u_diffuse: saturn_tex,
+                sun:0,
+            };
+            const uranus_uniforms = {
+                u_lightWorldPos: [0, 10, 0],
+                u_lightColor: [1, 1, 1, 1],
+                u_ambient: [0, 0, 0, 1],
+                u_specular: [1, 1, 1, 1],
+                u_shininess: 10,
+                u_specularFactor: 0.5,
+                u_diffuse: uranus_tex,
+                sun:0,
+            };
+            const neptune_uniforms = {
+                u_lightWorldPos: [0, 10, 0],
+                u_lightColor: [1, 1, 1, 1],
+                u_ambient: [0, 0, 0, 1],
+                u_specular: [1, 1, 1, 1],
+                u_shininess: 10,
+                u_specularFactor: 0.5,
+                u_diffuse: neptune_tex,
+                sun:0,
+            };
+            const path_uniforms = {
+                u_lightWorldPos: [0, 10, 0],
+                u_lightColor: [1, 1, 1, 1],
+                u_ambient: [0, 0, 0, 1],
+                u_specular: [1, 1, 1, 1],
+                u_shininess: 10,
+                u_specularFactor: 0.5,
+                u_diffuse: path_tex,
+                sun:1,
             };
 
             function render(time) {
@@ -214,7 +269,52 @@
                 twgl.setBuffersAndAttributes(gl, programInfo, sun);
                 twgl.drawBufferInfo(gl, sun);
                 //
+                
+                //Planet Paths
+                path_roundness = 20;
 
+                const mercuryPath = twgl.primitives.createTorusBufferInfo(gl, 8, 0.05, path_roundness, path_roundness);
+                twgl.setUniforms(programInfo, path_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, mercuryPath);
+                twgl.drawBufferInfo(gl, mercuryPath);
+
+                const venusPath = twgl.primitives.createTorusBufferInfo(gl, 12, 0.05, path_roundness, path_roundness);
+                twgl.setUniforms(programInfo, path_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, venusPath);
+                twgl.drawBufferInfo(gl, venusPath);
+
+                const earthPath = twgl.primitives.createTorusBufferInfo(gl, 18, 0.05, path_roundness, path_roundness);
+                twgl.setUniforms(programInfo, path_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, earthPath);
+                twgl.drawBufferInfo(gl, earthPath);
+
+                const marsPath = twgl.primitives.createTorusBufferInfo(gl, 25, 0.05, path_roundness, path_roundness);
+                twgl.setUniforms(programInfo, path_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, marsPath);
+                twgl.drawBufferInfo(gl, marsPath);
+
+                const jupiterPath = twgl.primitives.createTorusBufferInfo(gl, 30, 0.05, path_roundness, path_roundness);
+                twgl.setUniforms(programInfo, path_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, jupiterPath);
+                twgl.drawBufferInfo(gl, jupiterPath);
+
+                const saturnPath = twgl.primitives.createTorusBufferInfo(gl, 38, 0.05, path_roundness, path_roundness);
+                twgl.setUniforms(programInfo, path_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, saturnPath);
+                twgl.drawBufferInfo(gl, saturnPath);
+                
+                const neptunePath = twgl.primitives.createTorusBufferInfo(gl, 45, 0.05, path_roundness, path_roundness);
+                twgl.setUniforms(programInfo, path_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, neptunePath);
+                twgl.drawBufferInfo(gl, neptunePath);
+                
+                const uranusPath = twgl.primitives.createTorusBufferInfo(gl, 52, 0.05, path_roundness, path_roundness);
+                twgl.setUniforms(programInfo, path_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, uranusPath);
+                twgl.drawBufferInfo(gl, uranusPath);
+
+                //
+                
                 //Mercury:
                 const mercury_pos = m4.identity();
                 //Parent Body Location
@@ -283,6 +383,13 @@
                 twgl.drawBufferInfo(gl, earth);
                 //
 
+                //Moon Path
+                const moonPath = twgl.primitives.createTorusBufferInfo(gl, 2.4, 0.05, path_roundness, path_roundness);
+                twgl.setUniforms(programInfo, path_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, moonPath);
+                twgl.drawBufferInfo(gl, moonPath);
+                //
+
                 //Moon:
                 const moon_pos = m4.identity();
                 //Parent Body Location
@@ -325,6 +432,94 @@
                 twgl.setUniforms(programInfo, mars_uniforms);
                 twgl.setBuffersAndAttributes(gl, programInfo, mars);
                 twgl.drawBufferInfo(gl, mars);
+                //
+
+                //Jupiter:
+                const jupiter_pos = m4.identity();
+                //Parent Body Location
+                m4.translate(jupiter_pos, [0,0,0,1], jupiter_pos)
+                //translation around Sun
+                m4.rotateY(jupiter_pos, time*0.4, jupiter_pos)
+                m4.translate(jupiter_pos, [30,0,0,1], jupiter_pos)
+                m4.rotateY(jupiter_pos, time*-0.4, jupiter_pos)
+                //rotation and inclination
+                m4.rotateZ(jupiter_pos, 0.4, jupiter_pos)
+                m4.rotateY(jupiter_pos, time, jupiter_pos)
+                
+                jupiter_uniforms.u_viewInverse = camera;
+                jupiter_uniforms.u_world = jupiter_pos;
+                jupiter_uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(jupiter_pos));
+                jupiter_uniforms.u_worldViewProjection = m4.multiply(viewProjection, jupiter_pos);
+
+                twgl.setUniforms(programInfo, jupiter_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, jupiter);
+                twgl.drawBufferInfo(gl, jupiter);
+                //
+
+                //Saturn:
+                const saturn_pos = m4.identity();
+                //Parent Body Location
+                m4.translate(saturn_pos, [0,0,0,1], saturn_pos)
+                //translation around Sun
+                m4.rotateY(saturn_pos, time*0.3, saturn_pos)
+                m4.translate(saturn_pos, [38,0,0,1], saturn_pos)
+                m4.rotateY(saturn_pos, time*-0.3, saturn_pos)
+                //rotation and inclination
+                m4.rotateZ(saturn_pos, 0.4, saturn_pos)
+                m4.rotateY(saturn_pos, time, saturn_pos)
+                
+                saturn_uniforms.u_viewInverse = camera;
+                saturn_uniforms.u_world = saturn_pos;
+                saturn_uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(saturn_pos));
+                saturn_uniforms.u_worldViewProjection = m4.multiply(viewProjection, saturn_pos);
+
+                twgl.setUniforms(programInfo, saturn_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, saturn);
+                twgl.drawBufferInfo(gl, saturn);
+                //
+
+                //Uranus:
+                const uranus_pos = m4.identity();
+                //Parent Body Location
+                m4.translate(uranus_pos, [0,0,0,1], uranus_pos)
+                //translation around Sun
+                m4.rotateY(uranus_pos, time*0.2, uranus_pos)
+                m4.translate(uranus_pos, [45,0,0,1], uranus_pos)
+                m4.rotateY(uranus_pos, time*-0.2, uranus_pos)
+                //rotation and inclination
+                m4.rotateZ(uranus_pos, 0.4, uranus_pos)
+                m4.rotateY(uranus_pos, time, uranus_pos)
+                
+                uranus_uniforms.u_viewInverse = camera;
+                uranus_uniforms.u_world = uranus_pos;
+                uranus_uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(uranus_pos));
+                uranus_uniforms.u_worldViewProjection = m4.multiply(viewProjection, uranus_pos);
+
+                twgl.setUniforms(programInfo, uranus_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, uranus);
+                twgl.drawBufferInfo(gl, uranus);
+                //
+
+                //Neptune:
+                const neptune_pos = m4.identity();
+                //Parent Body Location
+                m4.translate(neptune_pos, [0,0,0,1], neptune_pos)
+                //translation around Sun
+                m4.rotateY(neptune_pos, time*0.1, neptune_pos)
+                m4.translate(neptune_pos, [52,0,0,1], neptune_pos)
+                m4.rotateY(neptune_pos, time*-0.1, neptune_pos)
+                //rotation and inclination
+                m4.rotateZ(neptune_pos, 0.4, neptune_pos)
+                m4.rotateY(neptune_pos, time, neptune_pos)
+                
+                neptune_uniforms.u_viewInverse = camera;
+                neptune_uniforms.u_world = neptune_pos;
+                neptune_uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(neptune_pos));
+                neptune_uniforms.u_worldViewProjection = m4.multiply(viewProjection, neptune_pos);
+
+                twgl.setUniforms(programInfo, neptune_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, neptune);
+                twgl.drawBufferInfo(gl, neptune);
                 //
 
                 requestAnimationFrame(render);

@@ -55,6 +55,7 @@
             uniform vec4 u_specular;
             uniform float u_shininess;
             uniform float u_specularFactor;
+            uniform int sun;
 
             vec4 lit(float l ,float h, float m) {
               return vec4(1.0,
@@ -79,8 +80,11 @@
                 u_lightColor * (diffuseColor * litR.y + diffuseColor * u_ambient +
                             u_specular * litR.z * u_specularFactor)).rgb,
                   diffuseColor.a);
-            
+              if(sun == 1)
+                gl_FragColor = 0.1*outColor + 0.9*diffuseColor;
+              else
                 gl_FragColor = 0.9*outColor + 0.1*diffuseColor;
+
             }
       
       </script>
@@ -112,6 +116,7 @@
                 u_shininess: 10,
                 u_specularFactor: 0.5,
                 u_diffuse: sun_tex,
+                sun: 1,
             };
 
             const mercury_uniforms = {
@@ -122,6 +127,7 @@
                 u_shininess: 10,
                 u_specularFactor: 0.5,
                 u_diffuse: mercury_tex,
+                sun:0,
             };
 
             const venus_uniforms = {
@@ -132,6 +138,7 @@
                 u_shininess: 10,
                 u_specularFactor: 0.5,
                 u_diffuse: venus_tex,
+                sun:0,
             };
             const earth_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
@@ -141,6 +148,7 @@
                 u_shininess: 10,
                 u_specularFactor: 0.5,
                 u_diffuse: earth_tex,
+                sun:0,
             };
 
             const moon_uniforms = {
@@ -151,6 +159,7 @@
                 u_shininess: 10,
                 u_specularFactor: 0.5,
                 u_diffuse: moon_tex,
+                sun:0,
             };
 
             const mars_uniforms = {
@@ -161,6 +170,7 @@
                 u_shininess: 10,
                 u_specularFactor: 0.5,
                 u_diffuse: mars_tex,
+                sun:0,
             };
 
             function render(time) {
@@ -175,7 +185,7 @@
                 const fov = 30 * Math.PI / 180;
                 const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
                 const zNear = 0.5;
-                const zFar = 200;
+                const zFar = 300;
                 const projection = m4.perspective(fov, aspect, zNear, zFar);
 
                 const eye = [0, 100, 150];

@@ -55,7 +55,6 @@
             uniform vec4 u_specular;
             uniform float u_shininess;
             uniform float u_specularFactor;
-            uniform int sun;
 
             vec4 lit(float l ,float h, float m) {
               return vec4(1.0,
@@ -80,11 +79,8 @@
                 u_lightColor * (diffuseColor * litR.y + diffuseColor * u_ambient +
                             u_specular * litR.z * u_specularFactor)).rgb,
                   diffuseColor.a);
-              if(sun == 1)
-                gl_FragColor = diffuseColor;
-              else
-                gl_FragColor = outColor;
 
+                gl_FragColor = outColor;
             }
       
       </script>
@@ -120,110 +116,110 @@
             const sun_uniforms = {
                 u_lightWorldPos: [0, 0, 0],
                 u_lightColor: [1, 1, 1, 1],
-                u_ambient: [0, 0, 0, 1],
+                u_ambient: [1, 1, 1, 1],
                 u_specular: [1, 1, 1, 1],
-                u_shininess: 10,
-                u_specularFactor: 0.5,
+                u_shininess: 20,
+                u_specularFactor: 0.1,
                 u_diffuse: sun_tex,
-                sun: 1,
+                sun: 0,
             };
             const mercury_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
-                u_ambient: [0, 0, 0, 1],
+                u_ambient: [0.05, 0.05, 0.05, 1],
                 u_specular: [1, 1, 1, 1],
-                u_shininess: 10,
-                u_specularFactor: 0.5,
+                u_shininess: 20,
+                u_specularFactor: 0.1,
                 u_diffuse: mercury_tex,
                 sun:0,
             };
             const venus_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
-                u_ambient: [0, 0, 0, 1],
+                u_ambient: [0.05, 0.05, 0.05, 1],
                 u_specular: [1, 1, 1, 1],
-                u_shininess: 10,
-                u_specularFactor: 0.5,
+                u_shininess: 20,
+                u_specularFactor: 0.1,
                 u_diffuse: venus_tex,
                 sun:0,
             };
             const earth_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
-                u_ambient: [0, 0, 0, 1],
+                u_ambient: [0.05, 0.05, 0.05, 1],
                 u_specular: [1, 1, 1, 1],
-                u_shininess: 10,
-                u_specularFactor: 0.5,
+                u_shininess: 20,
+                u_specularFactor: 0.1,
                 u_diffuse: earth_tex,
                 sun:0,
             };
             const moon_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
-                u_ambient: [0, 0, 0, 1],
+                u_ambient: [0.05, 0.05, 0.05, 1],
                 u_specular: [1, 1, 1, 1],
-                u_shininess: 10,
-                u_specularFactor: 0.5,
+                u_shininess: 20,
+                u_specularFactor: 0.1,
                 u_diffuse: moon_tex,
                 sun:0,
             };
             const mars_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
-                u_ambient: [0, 0, 0, 1],
+                u_ambient: [0.05, 0.05, 0.05, 1],
                 u_specular: [1, 1, 1, 1],
-                u_shininess: 10,
-                u_specularFactor: 0.5,
+                u_shininess: 20,
+                u_specularFactor: 0.1,
                 u_diffuse: mars_tex,
                 sun:0,
             };
             const jupiter_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
-                u_ambient: [0, 0, 0, 1],
+                u_ambient: [0.05, 0.05, 0.05, 1],
                 u_specular: [1, 1, 1, 1],
-                u_shininess: 10,
-                u_specularFactor: 0.5,
+                u_shininess: 20,
+                u_specularFactor: 0.1,
                 u_diffuse: jupiter_tex,
                 sun:0,
             };
             const saturn_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
-                u_ambient: [0, 0, 0, 1],
+                u_ambient: [0.05, 0.05, 0.05, 1],
                 u_specular: [1, 1, 1, 1],
-                u_shininess: 10,
-                u_specularFactor: 0.5,
+                u_shininess: 20,
+                u_specularFactor: 0.1,
                 u_diffuse: saturn_tex,
                 sun:0,
             };
             const uranus_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
-                u_ambient: [0, 0, 0, 1],
+                u_ambient: [0.05, 0.05, 0.05, 1],
                 u_specular: [1, 1, 1, 1],
-                u_shininess: 10,
-                u_specularFactor: 0.5,
+                u_shininess: 20,
+                u_specularFactor: 0.1,
                 u_diffuse: uranus_tex,
                 sun:0,
             };
             const neptune_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
-                u_ambient: [0, 0, 0, 1],
+                u_ambient: [0.05, 0.05, 0.05, 1],
                 u_specular: [1, 1, 1, 1],
-                u_shininess: 10,
-                u_specularFactor: 0.5,
+                u_shininess: 20,
+                u_specularFactor: 0.1,
                 u_diffuse: neptune_tex,
                 sun:0,
             };
             const path_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
-                u_ambient: [0, 0, 0, 1],
+                u_ambient: [0.05, 0.05, 0.05, 1],
                 u_specular: [1, 1, 1, 1],
-                u_shininess: 10,
-                u_specularFactor: 0.5,
+                u_shininess: 20,
+                u_specularFactor: 0.1,
                 u_diffuse: path_tex,
                 sun:1,
             };

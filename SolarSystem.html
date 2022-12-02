@@ -271,7 +271,14 @@
                 //
                 
                 //Planet Paths
-                path_roundness = 20;
+                path_roundness = 50;
+
+                const path_pos = m4.identity();
+
+                path_uniforms.u_viewInverse = camera;
+                path_uniforms.u_world = path_pos;
+                path_uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(path_pos));
+                path_uniforms.u_worldViewProjection = m4.multiply(viewProjection, path_pos);
 
                 const mercuryPath = twgl.primitives.createTorusBufferInfo(gl, 8, 0.05, path_roundness, path_roundness);
                 twgl.setUniforms(programInfo, path_uniforms);
@@ -384,6 +391,11 @@
                 //
 
                 //Moon Path
+                path_uniforms.u_viewInverse = camera;
+                path_uniforms.u_world = terra;
+                path_uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(terra));
+                path_uniforms.u_worldViewProjection = m4.multiply(viewProjection, terra);
+
                 const moonPath = twgl.primitives.createTorusBufferInfo(gl, 2.4, 0.05, path_roundness, path_roundness);
                 twgl.setUniforms(programInfo, path_uniforms);
                 twgl.setBuffersAndAttributes(gl, programInfo, moonPath);

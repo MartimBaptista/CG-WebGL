@@ -81,9 +81,9 @@
                             u_specular * litR.z * u_specularFactor)).rgb,
                   diffuseColor.a);
               if(sun == 1)
-                gl_FragColor = 0.1*outColor + 0.9*diffuseColor;
+                gl_FragColor = diffuseColor;
               else
-                gl_FragColor = 0.9*outColor + 0.1*diffuseColor;
+                gl_FragColor = outColor;
 
             }
       

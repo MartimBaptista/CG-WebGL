@@ -104,6 +104,13 @@
             const uranus = twgl.primitives.createSphereBufferInfo(gl, 1.2, 100, 100);
             const neptune = twgl.primitives.createSphereBufferInfo(gl, 1.2, 100, 100);
 
+            const moon_io = twgl.primitives.createSphereBufferInfo(gl, 3, 100, 100);
+            // const moon_europa = twgl.primitives.createSphereBufferInfo(gl, 0.2, 100, 100);
+            // const moon_ganimedes = twgl.primitives.createSphereBufferInfo(gl, 0.2, 100, 100);
+            // const moon_calisto = twgl.primitives.createSphereBufferInfo(gl, 0.2, 100, 100);
+
+
+
             var sun_tex = twgl.createTexture(gl, { src: '2k_sun.jpg' });
             var mercury_tex = twgl.createTexture(gl, { src: '2k_mercury.jpg' });
             var venus_tex = twgl.createTexture(gl, { src: '2k_venus_atmosphere.jpg' });
@@ -115,6 +122,11 @@
             var uranus_tex = twgl.createTexture(gl, { src: '2k_uranus.jpg' });
             var neptune_tex = twgl.createTexture(gl, { src: '2k_neptune.jpg' });
             var path_tex = twgl.createTexture(gl, { src: 'path.jpg' });
+
+            var moon_io_tex = twgl.createTexture(gl, { src: '2k_moon.jpg' });
+            // var moon_europa_tex = twgl.createTexture(gl, { src: '2k_moon.jpg' });
+            // var moon_ganimedes_tex = twgl.createTexture(gl, { src: '2k_moon.jpg' });
+            // var moon_calisto_tex = twgl.createTexture(gl, { src: '2k_moon.jpg' });
 
 
             const sun_uniforms = {
@@ -158,6 +170,16 @@
                 sun:0,
             };
             const moon_uniforms = {
+                u_lightWorldPos: [0, 10, 0],
+                u_lightColor: [1, 1, 1, 1],
+                u_ambient: [0, 0, 0, 1],
+                u_specular: [1, 1, 1, 1],
+                u_shininess: 10,
+                u_specularFactor: 0.5,
+                u_diffuse: moon_tex,
+                sun:0,
+            };
+            const moon_io_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
                 u_ambient: [0, 0, 0, 1],
@@ -271,7 +293,7 @@
                 //
                 
                 //Planet Paths
-                path_roundness = 20;
+                path_roundness = 100;
 
                 const mercuryPath = twgl.primitives.createTorusBufferInfo(gl, 8, 0.05, path_roundness, path_roundness);
                 twgl.setUniforms(programInfo, path_uniforms);
@@ -436,16 +458,18 @@
 
                 //Jupiter:
                 const jupiter_pos = m4.identity();
+                const jupiter_origin_pos = m4.identity();
                 //Parent Body Location
                 m4.translate(jupiter_pos, [0,0,0,1], jupiter_pos)
                 //translation around Sun
                 m4.rotateY(jupiter_pos, time*0.4, jupiter_pos)
                 m4.translate(jupiter_pos, [30,0,0,1], jupiter_pos)
                 m4.rotateY(jupiter_pos, time*-0.4, jupiter_pos)
+                m4.copy(jupiter_pos, jupiter_origin_pos)
                 //rotation and inclination
                 m4.rotateZ(jupiter_pos, 0.4, jupiter_pos)
                 m4.rotateY(jupiter_pos, time, jupiter_pos)
-                
+
                 jupiter_uniforms.u_viewInverse = camera;
                 jupiter_uniforms.u_world = jupiter_pos;
                 jupiter_uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(jupiter_pos));
@@ -454,6 +478,35 @@
                 twgl.setUniforms(programInfo, jupiter_uniforms);
                 twgl.setBuffersAndAttributes(gl, programInfo, jupiter);
                 twgl.drawBufferInfo(gl, jupiter);
+                //
+
+                //Moon Io Path
+                const moon_io_Path = twgl.primitives.createTorusBufferInfo(gl, 2.4, 0.05, path_roundness, path_roundness);
+                twgl.setUniforms(programInfo, path_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, moon_io_Path);
+                twgl.drawBufferInfo(gl, moon_io_Path);
+                //
+
+                //Moon Io:
+                const moon_io_pos = m4.identity();
+                //Parent Body Location
+                m4.copy(jupiter_origin_pos, moon_io_pos)
+                //translation around Parent
+                m4.rotateY(moon_io_pos, time*2, moon_io_pos)
+                m4.translate(moon_io_pos, [10,0,0,1], moon_io_pos)
+                m4.rotateY(moon_io_pos, time*-2, moon_io_pos)
+                //rotation and inclination
+                m4.rotateZ(moon_io_pos, 0.2, moon_io_pos)
+                m4.rotateY(moon_io_pos, time*-0.5, moon_io_pos)
+                
+                moon_uniforms.u_viewInverse = camera;
+                moon_uniforms.u_world = moon_io_pos;
+                moon_uniforms.u_worldInverseTranspose = m4.transpose(m4.inverse(moon_io_pos));
+                moon_uniforms.u_worldViewProjection = m4.multiply(viewProjection, moon_io_pos);
+
+                twgl.setUniforms(programInfo, moon_io_uniforms);
+                twgl.setBuffersAndAttributes(gl, programInfo, moon_io);
+                twgl.drawBufferInfo(gl, moon_io);
                 //
 
                 //Saturn:

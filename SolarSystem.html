@@ -100,17 +100,17 @@
             const uranus = twgl.primitives.createSphereBufferInfo(gl, 1.2, 100, 100);
             const neptune = twgl.primitives.createSphereBufferInfo(gl, 1.2, 100, 100);
 
-            var sun_tex = twgl.createTexture(gl, { src: '2k_sun.jpg' });
-            var mercury_tex = twgl.createTexture(gl, { src: '2k_mercury.jpg' });
-            var venus_tex = twgl.createTexture(gl, { src: '2k_venus_atmosphere.jpg' });
-            var earth_tex = twgl.createTexture(gl, { src: '2k_earth_daymap.jpg' });
-            var moon_tex = twgl.createTexture(gl, { src: '2k_moon.jpg' });
-            var mars_tex = twgl.createTexture(gl, { src: '2k_mars.jpg' });
-            var jupiter_tex = twgl.createTexture(gl, { src: '2k_jupiter.jpg' });
-            var saturn_tex = twgl.createTexture(gl, { src: '2k_saturn.jpg' });
-            var uranus_tex = twgl.createTexture(gl, { src: '2k_uranus.jpg' });
-            var neptune_tex = twgl.createTexture(gl, { src: '2k_neptune.jpg' });
-            var path_tex = twgl.createTexture(gl, { src: 'path.jpg' });
+            var sun_tex = twgl.createTexture(gl, { src: 'textures/2k_sun.jpg' });
+            var mercury_tex = twgl.createTexture(gl, { src: 'textures/2k_mercury.jpg' });
+            var venus_tex = twgl.createTexture(gl, { src: 'textures/2k_venus_atmosphere.jpg' });
+            var earth_tex = twgl.createTexture(gl, { src: 'textures/2k_earth_daymap.jpg' });
+            var moon_tex = twgl.createTexture(gl, { src: 'textures/2k_moon.jpg' });
+            var mars_tex = twgl.createTexture(gl, { src: 'textures/2k_mars.jpg' });
+            var jupiter_tex = twgl.createTexture(gl, { src: 'textures/2k_jupiter.jpg' });
+            var saturn_tex = twgl.createTexture(gl, { src: 'textures/2k_saturn.jpg' });
+            var uranus_tex = twgl.createTexture(gl, { src: 'textures/2k_uranus.jpg' });
+            var neptune_tex = twgl.createTexture(gl, { src: 'textures/2k_neptune.jpg' });
+            var path_tex = twgl.createTexture(gl, { src: 'textures/path_text.png' });
 
 
             const sun_uniforms = {
@@ -216,10 +216,10 @@
             const path_uniforms = {
                 u_lightWorldPos: [0, 10, 0],
                 u_lightColor: [1, 1, 1, 1],
-                u_ambient: [0.05, 0.05, 0.05, 1],
+                u_ambient: [1, 1, 1, 1],
                 u_specular: [1, 1, 1, 1],
-                u_shininess: 20,
-                u_specularFactor: 0.1,
+                u_shininess: 0,
+                u_specularFactor: 0,
                 u_diffuse: path_tex,
                 sun:1,
             };
